@@ -3,6 +3,7 @@ package com.tripdan.resource;
 import com.tripdan.model.Trip;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import io.quarkus.panache.common.Sort;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -15,15 +16,21 @@ import java.util.List;
 public class TripResource {
 
     @GET
+    @Transactional
     public List<Trip> list() {
-        return Trip.listAll();
+        List<Trip> trips = Trip.listAll(Sort.by("startDate"));
+        trips.forEach(t -> { t.checklistItems.size(); t.expenses.size(); });
+        return trips;
     }
 
     @GET
     @Path("/{id}")
+    @Transactional
     public Trip get(@PathParam("id") Long id) {
         Trip trip = Trip.findById(id);
         if (trip == null) throw new NotFoundException("Trip not found: " + id);
+        trip.checklistItems.size();
+        trip.expenses.size();
         return trip;
     }
 

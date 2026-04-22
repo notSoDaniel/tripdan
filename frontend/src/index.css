@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+input, select, textarea {
+  color: #111827;
 }
 
 body {
@@ -12,8 +16,3 @@ body {
   background-color: theme(colors.gray.50);
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: theme(colors.gray.900);
-  }
-}

@@ -12,7 +12,16 @@ public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilt
     @Override
     public void filter(ContainerRequestContext req) {
         if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
-            req.abortWith(jakarta.ws.rs.core.Response.ok().build());
+            String origin = req.getHeaderString("Origin");
+            jakarta.ws.rs.core.Response.ResponseBuilder rb = jakarta.ws.rs.core.Response.ok();
+            if (origin != null) {
+                rb.header("Access-Control-Allow-Origin", origin)
+                  .header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS")
+                  .header("Access-Control-Allow-Headers", "Content-Type,Authorization")
+                  .header("Access-Control-Allow-Credentials", "true")
+                  .header("Access-Control-Max-Age", "86400");
+            }
+            req.abortWith(rb.build());
         }
     }
 

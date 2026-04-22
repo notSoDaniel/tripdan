@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background-color: theme(colors.gray.50);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: theme(colors.gray.900);
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(java -version)",
+      "Bash(mvn -version)",
+      "Bash(node -version)",
+      "Bash(npm -version)",
+      "Bash(gh --version)",
+      "Bash(npm --version)",
+      "Bash(curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg)",
+      "Bash(sudo dd *)",
+      "Bash(sudo chmod *)",
+      "Bash(dpkg --print-architecture)",
+      "Bash(echo \"deb [arch=$\\(dpkg --print-architecture\\) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\")",
+      "Bash(sudo tee *)",
+      "Bash(sudo apt-get *)",
+      "Bash(mkdir -p /home/notsodaniel/bin)",
+      "Bash(curl -sL https://github.com/cli/cli/releases/download/v2.68.1/gh_2.68.1_linux_amd64.tar.gz -o /tmp/gh.tar.gz)",
+      "Bash(tar -xzf /tmp/gh.tar.gz -C /tmp)",
+      "Bash(cp /tmp/gh_2.68.1_linux_amd64/bin/gh /home/notsodaniel/bin/gh)",
+      "Bash(export PATH=\"/home/notsodaniel/bin:$PATH\")",
+      "Bash(/home/notsodaniel/.m2/wrapper/dists/apache-maven-3.9.12/6068d197/bin/mvn io.quarkus.platform:quarkus-maven-plugin:3.21.3:create -DprojectGroupId=com.tripdan -DprojectArtifactId=backend -DprojectVersion=1.0.0-SNAPSHOT -Dextensions=resteasy-reactive-jackson,hibernate-orm-panache,jdbc-postgresql,jdbc-h2,smallrye-openapi,hibernate-validator -DnoCode=true -DbuildTool=maven)",
+      "Bash(npm create *)",
+      "Bash(npm install *)"
+    ]
+  }
+}

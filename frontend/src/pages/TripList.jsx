@@ -30,7 +30,7 @@ export default function TripList() {
         <p className="text-blue-100 text-sm mt-1">{trips.length} viagem{trips.length !== 1 ? 's' : ''} registrada{trips.length !== 1 ? 's' : ''}</p>
       </AppHeader>
 
-      <div className="px-4 -mt-4">
+      <div className="px-4 -mt-4 relative z-10">
         <Link
           to="/trips/new"
           className="flex items-center justify-center gap-2 w-full bg-white border-2 border-dashed border-blue-300 text-blue-600 font-semibold rounded-2xl py-4 shadow-sm active:scale-95 transition-transform"

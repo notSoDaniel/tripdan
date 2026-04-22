@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import Footer from '../components/Footer';
+import Logo from '../components/Logo';
 
 const CATEGORY_ICON = {
   DOCUMENTS: '🪪', CLOTHING: '👕', HYGIENE: '🧴', ELECTRONICS: '🔌', MEDICATION: '💊', OTHER: '📦',
@@ -85,34 +86,47 @@ export default function TripDetail() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-indigo-600 text-white px-4 pt-12 pb-6">
-        <div className="flex items-center justify-between mb-4">
-          <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-xl active:bg-indigo-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+      <div className="relative bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 pt-12 pb-6 overflow-hidden">
+        <svg className="absolute inset-0 w-full h-full opacity-10 pointer-events-none" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice">
+          <ellipse cx="60" cy="50" rx="50" ry="28" fill="white" />
+          <ellipse cx="90" cy="40" rx="35" ry="22" fill="white" />
+          <ellipse cx="35" cy="55" rx="28" ry="18" fill="white" />
+          <ellipse cx="280" cy="25" rx="60" ry="30" fill="white" />
+          <ellipse cx="315" cy="15" rx="40" ry="22" fill="white" />
+          <ellipse cx="370" cy="80" rx="45" ry="24" fill="white" />
+        </svg>
+        <div className="relative z-10 flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-xl active:bg-blue-800">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <Logo size={28} />
+            <span className="text-white font-black text-sm tracking-widest uppercase">TRIPDAN</span>
+          </div>
           <div className="flex gap-2">
-            <Link to={`/trips/${id}/edit`} className="p-2 rounded-xl active:bg-indigo-700">
+            <Link to={`/trips/${id}/edit`} className="p-2 rounded-xl active:bg-blue-800">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </Link>
-            <button onClick={deleteTrip} className="p-2 rounded-xl active:bg-indigo-700">
+            <button onClick={deleteTrip} className="p-2 rounded-xl active:bg-blue-800">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
           </div>
         </div>
-        <p className="text-indigo-300 text-xs font-semibold tracking-widest uppercase mb-1">tripdan</p>
+        <div className="relative z-10">
         <h1 className="text-2xl font-bold">{trip.name}</h1>
-        <p className="text-indigo-200 text-sm mt-1 flex items-center gap-1">
+        <p className="text-blue-100 text-sm mt-1 flex items-center gap-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           </svg>
           {trip.destination} · {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
         </p>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -136,7 +150,7 @@ export default function TripDetail() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${tab === t ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'}`}
+              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${tab === t ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500'}`}
             >
               {t === 'checklist' ? '✅ Checklist' : '💰 Gastos'}
             </button>
@@ -150,7 +164,7 @@ export default function TripDetail() {
               <select
                 value={newItemCategory}
                 onChange={(e) => setNewItemCategory(e.target.value)}
-                className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="DOCUMENTS">🪪</option>
                 <option value="CLOTHING">👕</option>
@@ -162,9 +176,9 @@ export default function TripDetail() {
               <input
                 value={newItem} onChange={(e) => setNewItem(e.target.value)}
                 placeholder="Adicionar item..."
-                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button type="submit" className="bg-indigo-600 text-white px-4 rounded-xl font-bold active:scale-95 transition-transform">+</button>
+              <button type="submit" className="bg-blue-600 text-white px-4 rounded-xl font-bold active:scale-95 transition-transform">+</button>
             </form>
 
             {checklist.length === 0 && (
@@ -195,7 +209,7 @@ export default function TripDetail() {
                 value={newExpense.description}
                 onChange={(e) => setNewExpense((p) => ({ ...p, description: e.target.value }))}
                 placeholder="Descrição do gasto"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <div className="flex gap-2">
                 <input
@@ -203,12 +217,12 @@ export default function TripDetail() {
                   value={newExpense.amount}
                   onChange={(e) => setNewExpense((p) => ({ ...p, amount: e.target.value }))}
                   placeholder="Valor (R$)"
-                  className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <select
                   value={newExpense.type}
                   onChange={(e) => setNewExpense((p) => ({ ...p, type: e.target.value }))}
-                  className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="PLANNED">Previsto</option>
                   <option value="ACTUAL">Real</option>
@@ -218,7 +232,7 @@ export default function TripDetail() {
                 <select
                   value={newExpense.category}
                   onChange={(e) => setNewExpense((p) => ({ ...p, category: e.target.value }))}
-                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="TRANSPORT">✈️ Transporte</option>
                   <option value="ACCOMMODATION">🏨 Hospedagem</option>
@@ -227,7 +241,7 @@ export default function TripDetail() {
                   <option value="SHOPPING">🛍️ Compras</option>
                   <option value="OTHER">💳 Outro</option>
                 </select>
-                <button type="submit" className="bg-indigo-600 text-white px-5 rounded-xl font-bold active:scale-95 transition-transform">+</button>
+                <button type="submit" className="bg-blue-600 text-white px-5 rounded-xl font-bold active:scale-95 transition-transform">+</button>
               </div>
             </form>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../services/api';
 import Footer from '../components/Footer';
+import Logo from '../components/Logo';
 
 export default function TripForm() {
   const { id } = useParams();
@@ -40,15 +41,16 @@ export default function TripForm() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <header className="bg-white border-b border-gray-100 px-4 py-4 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-xl active:bg-gray-100">
-          <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <header className="bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-4 flex items-center gap-3">
+        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-xl active:bg-blue-800">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+        <Logo size={28} />
         <div>
-          <p className="text-xs text-indigo-500 font-semibold tracking-widest uppercase leading-none">tripdan</p>
-          <h1 className="text-lg font-semibold text-gray-900 leading-tight">{isEdit ? 'Editar viagem' : 'Nova viagem'}</h1>
+          <p className="text-xs text-blue-200 font-black tracking-widest uppercase leading-none">TRIPDAN</p>
+          <h1 className="text-lg font-semibold text-white leading-tight">{isEdit ? 'Editar viagem' : 'Nova viagem'}</h1>
         </div>
       </header>
 
@@ -104,7 +106,7 @@ export default function TripForm() {
 
         <button
           type="submit" disabled={saving}
-          className="w-full bg-indigo-600 text-white font-semibold rounded-xl py-4 mt-2 active:scale-95 transition-transform disabled:opacity-60"
+          className="w-full bg-blue-600 text-white font-semibold rounded-xl py-4 mt-2 active:scale-95 transition-transform disabled:opacity-60"
         >
           {saving ? 'Salvando...' : isEdit ? 'Salvar alterações' : 'Criar viagem'}
         </button>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import Footer from '../components/Footer';
+import AppHeader from '../components/AppHeader';
 
 const STATUS_LABEL = { PLANNED: 'Planejada', IN_PROGRESS: 'Em andamento', COMPLETED: 'Concluída' };
 const STATUS_COLOR = {
@@ -24,16 +25,15 @@ export default function TripList() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <header className="bg-indigo-600 text-white px-4 pt-12 pb-6">
-        <p className="text-indigo-300 text-xs font-semibold tracking-widest uppercase mb-1">tripdan</p>
+      <AppHeader>
         <h1 className="text-2xl font-bold tracking-tight">Minhas Viagens</h1>
-        <p className="text-indigo-200 text-sm mt-1">{trips.length} viagem{trips.length !== 1 ? 's' : ''} registrada{trips.length !== 1 ? 's' : ''}</p>
-      </header>
+        <p className="text-blue-100 text-sm mt-1">{trips.length} viagem{trips.length !== 1 ? 's' : ''} registrada{trips.length !== 1 ? 's' : ''}</p>
+      </AppHeader>
 
-      <div className="px-4 -mt-4">
+      <div className="px-4 -mt-4 relative z-10">
         <Link
           to="/trips/new"
-          className="flex items-center justify-center gap-2 w-full bg-white border-2 border-dashed border-indigo-300 text-indigo-600 font-semibold rounded-2xl py-4 shadow-sm active:scale-95 transition-transform"
+          className="flex items-center justify-center gap-2 w-full bg-white border-2 border-dashed border-blue-300 text-blue-600 font-semibold rounded-2xl py-4 shadow-sm active:scale-95 transition-transform"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -59,7 +59,7 @@ export default function TripList() {
           <Link
             key={trip.id}
             to={`/trips/${trip.id}`}
-            className="block bg-white rounded-2xl shadow-sm border border-gray-100 p-4 active:scale-98 transition-transform"
+            className="block bg-white rounded-2xl shadow-sm border border-gray-100 p-4 active:scale-95 transition-transform"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">

@@ -37,6 +37,9 @@ public class Trip extends PanacheEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     public LocalDateTime createdAt;
 
+    @Column(name = "user_id")
+    public Long userId;
+
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<ChecklistItem> checklistItems = new ArrayList<>();
 

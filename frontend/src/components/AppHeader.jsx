@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,15 +13,12 @@ function Clouds() {
       <ellipse cx="60" cy="50" rx="50" ry="28" fill="white" />
       <ellipse cx="90" cy="40" rx="35" ry="22" fill="white" />
       <ellipse cx="35" cy="55" rx="28" ry="18" fill="white" />
-
       <ellipse cx="230" cy="30" rx="60" ry="30" fill="white" />
       <ellipse cx="265" cy="20" rx="40" ry="22" fill="white" />
       <ellipse cx="200" cy="38" rx="32" ry="20" fill="white" />
-
       <ellipse cx="360" cy="80" rx="45" ry="24" fill="white" />
       <ellipse cx="385" cy="68" rx="28" ry="18" fill="white" />
       <ellipse cx="338" cy="85" rx="26" ry="16" fill="white" />
-
       <ellipse cx="130" cy="110" rx="38" ry="20" fill="white" />
       <ellipse cx="155" cy="100" rx="26" ry="16" fill="white" />
     </svg>
@@ -28,9 +26,10 @@ function Clouds() {
 }
 
 export default function AppHeader({ children }) {
-  const { email, logout } = useAuth();
+  const { email, role, logout } = useAuth();
   const initial = email ? email[0].toUpperCase() : '?';
   const username = email ? email.split('@')[0] : '';
+  const isAdmin = role === 'ADMIN';
 
   return (
     <header className="relative bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 pt-12 pb-6 overflow-hidden">
@@ -45,8 +44,25 @@ export default function AppHeader({ children }) {
             <div className="w-6 h-6 rounded-full bg-white text-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
               {initial}
             </div>
-            <span className="text-xs text-blue-100 max-w-[72px] truncate">{username}</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs text-blue-100 max-w-[72px] truncate leading-tight">{username}</span>
+              {isAdmin && (
+                <span className="text-[10px] font-bold text-yellow-300 leading-tight uppercase tracking-wide">Admin</span>
+              )}
+            </div>
           </div>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              title="Painel Admin"
+              className="p-2 rounded-xl hover:bg-white/15 active:bg-white/25 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </Link>
+          )}
           <button
             onClick={logout}
             title="Sair"

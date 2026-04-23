@@ -95,6 +95,20 @@ Never commit features directly to `main` or `develop`.
 
 Após o merge de qualquer branch em `develop` ou `main`, apagar a branch imediatamente (local e remote).
 
+## Roadmap — próximas features (v0.0.3+)
+
+As features abaixo estão planejadas mas ainda não implementadas. Cada uma deve seguir Git Flow em sua própria branch:
+
+| Feature | Branch | Status |
+|---|---|---|
+| Perfis de usuário (comum e administrador) | `feature/user-roles` | pendente |
+| Melhorias visuais (a detalhar com o usuário) | `feature/ui-improvements` | pendente |
+| Editar itens de checklist e gastos | `feature/edit-items` | pendente |
+| Média de gasto por dia de viagem | `feature/expense-average` | pendente |
+| Gráficos de resumo de gastos | `feature/expense-charts` | pendente |
+
+> Antes de iniciar `feature/ui-improvements`, perguntar ao usuário quais aspectos visuais quer melhorar (animações, espaçamentos, cores, loading states, etc.).
+
 ## Deploy
 
 - **Backend:** `backend/Dockerfile` (multi-stage, eclipse-temurin:21-alpine). Targets Render or Railway. Set `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars in the platform.

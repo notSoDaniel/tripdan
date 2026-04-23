@@ -1,16 +1,28 @@
 const BASE = (import.meta.env.VITE_API_URL ?? '') + '/api';
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
+  const token = localStorage.getItem('token');
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${BASE}${path}`, { headers, ...options });
+
+  if (res.status === 401) {
+    window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+    throw new Error('HTTP 401');
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   if (res.status === 204) return null;
   return res.json();
 }
 
 export const api = {
+  auth: {
+    login: (email, password) =>
+      request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+    register: (email, password) =>
+      request('/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  },
   trips: {
     list: () => request('/trips'),
     get: (id) => request(`/trips/${id}`),
@@ -28,6 +40,6 @@ export const api = {
     list: (tripId) => request(`/trips/${tripId}/expenses`),
     summary: (tripId) => request(`/trips/${tripId}/expenses/summary`),
     create: (tripId, data) => request(`/trips/${tripId}/expenses`, { method: 'POST', body: JSON.stringify(data) }),
-    delete: (tripId, expenseId) => request(`/trips/${tripId}/expenses/${expenseId}`, { method: 'DELETE' }),
+    delete: (tripId, expId) => request(`/trips/${tripId}/expenses/${expId}`, { method: 'DELETE' }),
   },
 };

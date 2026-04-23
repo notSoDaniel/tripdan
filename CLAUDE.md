@@ -81,6 +81,18 @@ services/
 
 **Tailwind note:** Uses Tailwind v4 (`@import "tailwindcss"` in `index.css`, configured via `@tailwindcss/vite` plugin). No `tailwind.config.js`. `color-scheme` is forced to `light` — dark mode is not implemented.
 
+## Git workflow
+
+This project uses **Git Flow**:
+
+- `main` — production-ready code only
+- `develop` — integration branch; all features merge here
+- `feature/<name>` — branch off `develop` for new features
+- `release/<version>` — branch off `develop` when preparing a release; merges into both `main` and `develop`
+- `hotfix/<name>` — branch off `main` for urgent production fixes; merges into both `main` and `develop`
+
+Never commit features directly to `main` or `develop`.
+
 ## Deploy
 
 - **Backend:** `backend/Dockerfile` (multi-stage, eclipse-temurin:21-alpine). Targets Render or Railway. Set `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars in the platform.

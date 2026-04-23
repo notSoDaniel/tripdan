@@ -7,21 +7,26 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [email, setEmail] = useState(() => localStorage.getItem('userEmail'));
+  const [role, setRole] = useState(() => localStorage.getItem('userRole'));
   const navigate = useNavigate();
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
     setToken(null);
     setEmail(null);
+    setRole(null);
     navigate('/login');
   }, [navigate]);
 
   const storeAuth = (authData) => {
     localStorage.setItem('token', authData.token);
     localStorage.setItem('userEmail', authData.email);
+    localStorage.setItem('userRole', authData.role);
     setToken(authData.token);
     setEmail(authData.email);
+    setRole(authData.role);
   };
 
   useEffect(() => {
@@ -31,7 +36,7 @@ export function AuthProvider({ children }) {
   }, [logout]);
 
   return (
-    <AuthContext.Provider value={{ token, email, storeAuth, logout }}>
+    <AuthContext.Provider value={{ token, email, role, storeAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );

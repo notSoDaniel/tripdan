@@ -21,7 +21,11 @@
       "Bash(export PATH=\"/home/notsodaniel/bin:$PATH\")",
       "Bash(/home/notsodaniel/.m2/wrapper/dists/apache-maven-3.9.12/6068d197/bin/mvn io.quarkus.platform:quarkus-maven-plugin:3.21.3:create -DprojectGroupId=com.tripdan -DprojectArtifactId=backend -DprojectVersion=1.0.0-SNAPSHOT -Dextensions=resteasy-reactive-jackson,hibernate-orm-panache,jdbc-postgresql,jdbc-h2,smallrye-openapi,hibernate-validator -DnoCode=true -DbuildTool=maven)",
       "Bash(npm create *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }

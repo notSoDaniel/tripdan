@@ -42,18 +42,25 @@ Panache Active Record pattern — entities extend `PanacheEntity` and carry thei
 
 ```
 model/
-  Trip.java           — root aggregate; owns checklist + expenses via OneToMany(CASCADE ALL)
+  User.java           — usuário com email, passwordHash, role (USER|ADMIN), createdAt
+  Trip.java           — root aggregate; owns checklist + expenses via OneToMany(CASCADE ALL); campo userId para isolamento por dono
   ChecklistItem.java  — child of Trip; @JsonIgnore on trip field (breaks circular ref)
   Expense.java        — child of Trip; @JsonIgnore on trip field; type=PLANNED|ACTUAL enables budget vs actual tracking
 resource/
-  TripResource.java          — CRUD /api/trips; GET methods are @Transactional and call .size() on lazy collections to force init before Jackson serializes
-  ChecklistResource.java     — /api/trips/{tripId}/checklist; PATCH /{itemId}/toggle flips checked
-  ExpenseResource.java       — /api/trips/{tripId}/expenses; GET /summary returns {planned, actual, balance}
+  AuthResource.java          — POST /api/auth/register, /login, /bootstrap (cria primeiro ADMIN; auto-desativa)
+  TripResource.java          — CRUD /api/trips; @Authenticated; filtra por userId; GET methods force-init lazy collections
+  ChecklistResource.java     — /api/trips/{tripId}/checklist; PATCH /{itemId}/toggle flips checked; IDOR check
+  ExpenseResource.java       — /api/trips/{tripId}/expenses; GET /summary returns {planned, actual, balance}; IDOR check
+  AdminResource.java         — @RolesAllowed("ADMIN"); GET /api/admin/users|trips, PUT /role, DELETE /users/{id}
 ```
 
 **Key constraint:** Quarkus RESTEasy Reactive serializes responses *outside* the transaction boundary. Lazy collections on `Trip` must be force-initialized inside `@Transactional` GET methods (`trip.checklistItems.size()`), or they throw `LazyInitializationException`.
 
 **Bean validation gotcha:** `@NotNull` must not be placed on `@ManyToOne trip` fields in child entities — the resource sets the field after deserialization, so validation fires before assignment.
+
+**CORS:** Configurado via `quarkus.http.cors.*` em `application.properties`. Não usar `ContainerResponseFilter` — ele não é invocado em respostas de erro do `QuarkusErrorHandler`. A config nativa atua no nível do Vert.x e cobre todos os casos.
+
+**JWT:** Assina com RSA. Em dev/test usa `dev-private.pem`/`dev-public.pem` commitados. Em prod, setar `SMALLRYE_JWT_SIGN_KEY` e `MP_JWT_VERIFY_PUBLICKEY` como variáveis de ambiente (base64 DER, sem headers PEM). Roles são passadas no claim `groups` do JWT para que `@RolesAllowed` funcione.
 
 ### Database profiles
 
@@ -61,7 +68,9 @@ resource/
 |---|---|---|
 | `%dev` | H2 in-memory | `drop-and-create` (data lost on restart) |
 | `%test` | H2 in-memory | `drop-and-create` |
-| `%prod` | PostgreSQL | `validate` (requires `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars) |
+| `%prod` | PostgreSQL | `update` (requires `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars) |
+
+> **Atenção prod:** o `update` do Hibernate nem sempre adiciona colunas novas automaticamente. Ao adicionar campos a entidades existentes, rodar o ALTER TABLE manualmente no banco de produção antes do deploy para garantir.
 
 ### Frontend
 
@@ -69,14 +78,21 @@ Single-page app with React Router v7. All API calls go through `src/services/api
 
 ```
 pages/
-  TripList.jsx    — home screen; lists all trips
+  TripList.jsx    — home screen; lists trips do usuário logado
   TripForm.jsx    — create + edit (shared, driven by presence of :id param)
   TripDetail.jsx  — trip view with two tabs: Checklist and Expenses
+  LoginPage.jsx   — formulário de login
+  RegisterPage.jsx — formulário de cadastro
+  AdminPage.jsx   — painel admin com abas Usuários e Viagens; acessível só por ADMIN
+context/
+  AuthContext.jsx — armazena token, email e role no localStorage; expõe logout; dispara auth:unauthorized no 401
 components/
-  Footer.jsx      — fixed bottom bar showing "tripdan v0.0.1"
-  BottomNav.jsx   — bottom navigation (currently single item)
+  AppHeader.jsx   — header com gradiente azul, nuvens, logo, perfil do usuário e botão logout; badge Admin + link para /admin se ADMIN
+  BottomNav.jsx   — navegação inferior; item "Painel" visível só para ADMIN
+  ProtectedRoute.jsx — redireciona para /login se sem token; AdminRoute redireciona para / se não for ADMIN
+  Footer.jsx      — fixed bottom bar mostrando "tripdan v0.0.3"
 services/
-  api.js          — thin fetch wrapper; all endpoints in one object (api.trips, api.checklist, api.expenses)
+  api.js          — thin fetch wrapper; endpoints: api.auth, api.trips, api.checklist, api.expenses, api.admin
 ```
 
 **Tailwind note:** Uses Tailwind v4 (`@import "tailwindcss"` in `index.css`, configured via `@tailwindcss/vite` plugin). No `tailwind.config.js`. `color-scheme` is forced to `light` — dark mode is not implemented.
@@ -95,13 +111,13 @@ Never commit features directly to `main` or `develop`.
 
 Após o merge de qualquer branch em `develop` ou `main`, apagar a branch imediatamente (local e remote).
 
-## Roadmap — próximas features (v0.0.3+)
+## Roadmap — próximas features (v0.0.4+)
 
 As features abaixo estão planejadas mas ainda não implementadas. Cada uma deve seguir Git Flow em sua própria branch:
 
 | Feature | Branch | Status |
 |---|---|---|
-| Perfis de usuário (comum e administrador) | `feature/user-roles` | pendente |
+| ~~Perfis de usuário (comum e administrador)~~ | ~~`feature/user-roles`~~ | **Concluído em v0.0.3** |
 | Melhorias visuais (a detalhar com o usuário) | `feature/ui-improvements` | pendente |
 | Editar itens de checklist e gastos | `feature/edit-items` | pendente |
 | Média de gasto por dia de viagem | `feature/expense-average` | pendente |
@@ -111,5 +127,9 @@ As features abaixo estão planejadas mas ainda não implementadas. Cada uma deve
 
 ## Deploy
 
-- **Backend:** `backend/Dockerfile` (multi-stage, eclipse-temurin:21-alpine). Targets Render or Railway. Set `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars in the platform.
-- **Frontend:** `frontend/netlify.toml` (Netlify) or `frontend/vercel.json` (Vercel). Both redirect all routes to `index.html` for SPA routing. Set `VITE_API_URL` if the backend URL differs from the proxy default.
+- **Backend:** `backend/Dockerfile` (multi-stage, eclipse-temurin:21-alpine). Targets Render. Variáveis de ambiente necessárias:
+  - `DB_URL`, `DB_USER`, `DB_PASSWORD` — conexão PostgreSQL
+  - `SMALLRYE_JWT_SIGN_KEY` — chave privada RSA em base64 DER (sem headers PEM)
+  - `MP_JWT_VERIFY_PUBLICKEY` — chave pública RSA em base64 DER (sem headers PEM)
+- **Frontend:** `frontend/vercel.json` (Vercel). Redireciona todas as rotas para `index.html` para SPA routing. Set `VITE_API_URL` com a URL do backend no Render.
+- **Primeiro admin em produção:** `POST /api/auth/bootstrap` com `{"email":"...","password":"..."}`. Funciona apenas se não houver nenhum ADMIN no banco. Auto-desativa após o primeiro uso.

@@ -2,11 +2,14 @@ package com.tripdan.resource;
 
 import com.tripdan.model.Expense;
 import com.tripdan.model.Trip;
+import io.quarkus.security.Authenticated;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,7 +18,11 @@ import java.util.Map;
 @Path("/api/trips/{tripId}/expenses")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class ExpenseResource {
+
+    @Inject
+    JsonWebToken jwt;
 
     @GET
     public List<Expense> list(@PathParam("tripId") Long tripId) {
@@ -71,11 +78,14 @@ public class ExpenseResource {
 
     private Trip requireTrip(Long tripId) {
         Trip trip = Trip.findById(tripId);
-        if (trip == null) throw new NotFoundException("Trip not found: " + tripId);
+        if (trip == null || !Long.valueOf(jwt.getSubject()).equals(trip.userId)) {
+            throw new NotFoundException("Trip not found: " + tripId);
+        }
         return trip;
     }
 
     private Expense findOrThrow(Long tripId, Long expenseId) {
+        requireTrip(tripId);
         Expense e = Expense.findById(expenseId);
         if (e == null || !e.trip.id.equals(tripId)) throw new NotFoundException();
         return e;

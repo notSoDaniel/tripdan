@@ -60,8 +60,11 @@ public class AdminResource {
     @Transactional
     public List<TripInfo> listAllTrips() {
         return Trip.<Trip>listAll().stream().map(t -> {
-            User owner = User.findById(t.userId);
-            String email = owner != null ? owner.email : null;
+            String email = null;
+            if (t.userId != null) {
+                User owner = User.findById(t.userId);
+                email = owner != null ? owner.email : null;
+            }
             return new TripInfo(t.id, t.userId, email, t.name, t.destination,
                     t.startDate != null ? t.startDate.toString() : null,
                     t.endDate != null ? t.endDate.toString() : null,

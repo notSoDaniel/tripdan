@@ -93,6 +93,8 @@ This project uses **Git Flow**:
 
 Never commit features directly to `main` or `develop`.
 
+Após o merge de qualquer branch em `develop` ou `main`, apagar a branch imediatamente (local e remote).
+
 ## Deploy
 
 - **Backend:** `backend/Dockerfile` (multi-stage, eclipse-temurin:21-alpine). Targets Render or Railway. Set `DB_URL`, `DB_USER`, `DB_PASSWORD` env vars in the platform.

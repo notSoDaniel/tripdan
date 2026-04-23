@@ -120,6 +120,13 @@ A branch `main` é protegida — push direto bloqueado, PR com aprovação obrig
 
 ## Changelog
 
+### v0.0.2 — 2026-04-22
+- Sistema de login e cadastro com e-mail e senha
+- Autenticação via JWT (SmallRye JWT + RSA)
+- Cada usuário vê apenas suas próprias viagens
+- Perfil do usuário exibido no topo do app com botão de logout
+- Proteção contra IDOR em checklist e gastos
+
 ### v0.0.1 — 2026-04-22
 - Lançamento inicial
 - CRUD de viagens

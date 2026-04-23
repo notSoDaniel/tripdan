@@ -72,9 +72,10 @@ tripdan/
 ├── backend/                    # Quarkus API REST
 │   ├── src/main/java/com/tripdan/
 │   │   ├── model/              # User, Trip, ChecklistItem, Expense
-│   │   └── resource/           # AuthResource, TripResource, ChecklistResource, ExpenseResource, AdminResource
+│   │   ├── resource/           # AuthResource, TripResource, ChecklistResource, ExpenseResource, AdminResource
+│   │   └── filter/             # CorsFilter (ContainerRequestFilter + ContainerResponseFilter)
 │   └── src/main/resources/
-│       └── application.properties  # Perfis dev/test/prod + CORS + JWT
+│       └── application.properties  # Perfis dev/test/prod + JWT
 │
 └── frontend/                   # React SPA
     └── src/
@@ -130,7 +131,6 @@ A branch `main` é protegida — push direto bloqueado, PR com aprovação obrig
 - Painel admin com gestão de usuários (promover/rebaixar/deletar) e visão de todas as viagens
 - Endpoint bootstrap para criação do primeiro admin em produção
 - Badge "Admin" e link para painel no header para usuários ADMIN
-- CORS migrado para configuração nativa do Quarkus
 
 ### v0.0.2 — 2026-04-22
 - Sistema de login e cadastro com e-mail e senha

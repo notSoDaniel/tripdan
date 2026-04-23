@@ -58,7 +58,7 @@ resource/
 
 **Bean validation gotcha:** `@NotNull` must not be placed on `@ManyToOne trip` fields in child entities — the resource sets the field after deserialization, so validation fires before assignment.
 
-**CORS:** Configurado via `quarkus.http.cors.*` em `application.properties`. Não usar `ContainerResponseFilter` — ele não é invocado em respostas de erro do `QuarkusErrorHandler`. A config nativa atua no nível do Vert.x e cobre todos os casos.
+**CORS:** Tratado via `filter/CorsFilter.java` — `ContainerResponseFilter` + `ContainerRequestFilter` com `@PreMatching`. **Não usar** `quarkus.http.cors.*` em `application.properties`: a config nativa foi tentada e quebrou todo o CORS (inclusive login/register), possivelmente por conflito com `quarkus-smallrye-jwt`. O filtro JAX-RS funciona para todos os fluxos normais; se um endpoint retornar 500 sem CORS, investigar exceção não tratada na raiz.
 
 **JWT:** Assina com RSA. Em dev/test usa `dev-private.pem`/`dev-public.pem` commitados. Em prod, setar `SMALLRYE_JWT_SIGN_KEY` e `MP_JWT_VERIFY_PUBLICKEY` como variáveis de ambiente (base64 DER, sem headers PEM). Roles são passadas no claim `groups` do JWT para que `@RolesAllowed` funcione.
 

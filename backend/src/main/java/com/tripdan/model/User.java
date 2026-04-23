@@ -11,6 +11,8 @@ import java.util.Optional;
 @Table(name = "users")
 public class User extends PanacheEntity {
 
+    public enum Role { USER, ADMIN }
+
     @NotBlank
     @Column(unique = true, nullable = false)
     public String email;
@@ -18,6 +20,10 @@ public class User extends PanacheEntity {
     @NotBlank
     @Column(name = "password_hash", nullable = false)
     public String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    public Role role = Role.USER;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     public LocalDateTime createdAt;
@@ -29,5 +35,9 @@ public class User extends PanacheEntity {
 
     public static Optional<User> findByEmail(String email) {
         return find("email", email).firstResultOptional();
+    }
+
+    public static long countAdmins() {
+        return count("role", Role.ADMIN);
     }
 }

@@ -22,6 +22,14 @@ export const api = {
       request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
     register: (email, password) =>
       request('/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) }),
+    bootstrap: (email, password) =>
+      request('/auth/bootstrap', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  },
+  admin: {
+    users: () => request('/admin/users'),
+    setRole: (id, role) => request(`/admin/users/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }) }),
+    deleteUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
+    trips: () => request('/admin/trips'),
   },
   trips: {
     list: () => request('/trips'),
